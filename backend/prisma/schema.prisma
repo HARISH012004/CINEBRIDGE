@@ -1,0 +1,352 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleName {
+  ARTIST
+  FILMMAKER
+  VENUE_OWNER
+  ADMIN
+}
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+enum ListingStatus {
+  DRAFT
+  PUBLISHED
+  PAUSED
+  CLOSED
+}
+enum ApplicationStatus {
+  APPLIED
+  UNDER_REVIEW
+  SHORTLISTED
+  AUDITION_SCHEDULED
+  SELECTED
+  NOT_SELECTED
+  WITHDRAWN
+}
+enum BookingStatus {
+  REQUESTED
+  APPROVED
+  REJECTED
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+enum PaymentStatus {
+  NOT_REQUIRED
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model Role {
+  id String @id @default(cuid())
+  name RoleName @unique
+  users User[]
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  passwordHash String
+  name String
+  roleId String
+  role Role @relation(fields:[roleId], references:[id])
+  phone String?
+  emailVerifiedAt DateTime?
+  verificationStatus VerificationStatus @default(PENDING)
+  suspendedAt DateTime?
+  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  artistProfile ArtistProfile?
+  filmmakerProfile FilmmakerProfile?
+  venueOwnerProfile VenueOwnerProfile?
+  notifications Notification[]
+  sentMessages Message[] @relation("SentMessages")
+  savedItems SavedItem[]
+  reports Report[] @relation("Reporter")
+  @@index([email])
+}
+
+model ArtistProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  slug String @unique
+  city String
+  intro String?
+  dateOfBirth DateTime?
+  languages String[]
+  skills String[]
+  experience String?
+  heightCm Int?
+  category String
+  projects Json @default("[]")
+  education String?
+  profilePictureUrl String?
+  coverImageUrl String?
+  media PortfolioMedia[]
+  applications AuditionApplication[]
+}
+
+model FilmmakerProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  productionCompanyId String?
+  productionCompany ProductionCompany? @relation(fields:[productionCompanyId], references:[id])
+  designation String?
+  auditions Audition[]
+}
+
+model VenueOwnerProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  venues Venue[]
+}
+
+model ProductionCompany {
+  id String @id @default(cuid())
+  name String
+  website String?
+  description String?
+  verificationStatus VerificationStatus @default(PENDING)
+  filmmakers FilmmakerProfile[]
+  auditions Audition[]
+}
+
+model Audition {
+  id String @id @default(cuid())
+  projectName String
+  description String
+  category String
+  language String
+  genre String?
+  location String
+  auditionDate DateTime
+  auditionTime String
+  registrationDeadline DateTime
+  paid Boolean @default(false)
+  entryFee Int @default(0)
+  contactName String
+  contactPhone String
+  contactEmail String
+  status ListingStatus @default(DRAFT)
+  creatorId String
+  creator FilmmakerProfile @relation(fields:[creatorId], references:[id])
+  companyId String?
+  company ProductionCompany? @relation(fields:[companyId], references:[id])
+  roles AuditionRole[]
+  applications AuditionApplication[]
+  passes AuditionPass[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([status, auditionDate])
+  @@index([location])
+}
+
+model AuditionRole {
+  id String @id @default(cuid())
+  auditionId String
+  audition Audition @relation(fields:[auditionId], references:[id], onDelete:Cascade)
+  name String
+  vacancies Int @default(1)
+  ageMin Int?
+  ageMax Int?
+  gender String?
+  skills String[]
+  experience String?
+}
+
+model AuditionApplication {
+  id String @id @default(cuid())
+  auditionId String
+  artistId String
+  audition Audition @relation(fields:[auditionId], references:[id], onDelete:Cascade)
+  artist ArtistProfile @relation(fields:[artistId], references:[id], onDelete:Cascade)
+  status ApplicationStatus @default(APPLIED)
+  coverNote String?
+  videoUrl String?
+  createdAt DateTime @default(now())
+  @@unique([auditionId, artistId])
+  @@index([status])
+}
+
+model PortfolioMedia {
+  id String @id @default(cuid())
+  artistId String
+  artist ArtistProfile @relation(fields:[artistId], references:[id], onDelete:Cascade)
+  type String
+  url String
+  title String?
+  createdAt DateTime @default(now())
+}
+
+model Venue {
+  id String @id @default(cuid())
+  ownerId String
+  owner VenueOwnerProfile @relation(fields:[ownerId], references:[id], onDelete:Cascade)
+  name String
+  category String
+  city String
+  address String
+  latitude Float?
+  longitude Float?
+  photographs String[]
+  videoUrl String?
+  capacity Int
+  indoor Boolean @default(true)
+  facilities String[]
+  hourlyPrice Int
+  halfDayPrice Int?
+  fullDayPrice Int?
+  cancellationPolicy String?
+  operatingHours String?
+  active Boolean @default(true)
+  availability VenueAvailability[]
+  bookings VenueBooking[]
+  reviews Review[]
+  @@index([city, active])
+}
+
+model VenueAvailability {
+  id String @id @default(cuid())
+  venueId String
+  venue Venue @relation(fields:[venueId], references:[id], onDelete:Cascade)
+  date DateTime @db.Date
+  startTime String
+  endTime String
+  blocked Boolean @default(false)
+  @@unique([venueId, date, startTime, endTime])
+}
+
+model VenueBooking {
+  id String @id @default(cuid())
+  venueId String
+  requesterId String
+  venue Venue @relation(fields:[venueId], references:[id], onDelete:Cascade)
+  date DateTime @db.Date
+  startTime String
+  endTime String
+  status BookingStatus @default(REQUESTED)
+  paymentStatus PaymentStatus @default(NOT_REQUIRED)
+  amount Int @default(0)
+  createdAt DateTime @default(now())
+  payments Payment[]
+  @@index([venueId, date, status])
+  @@index([requesterId])
+}
+
+model Payment {
+  id String @id @default(cuid())
+  bookingId String?
+  booking VenueBooking? @relation(fields:[bookingId], references:[id])
+  provider String @default("razorpay")
+  providerOrderId String?
+  providerPaymentId String?
+  amount Int
+  status PaymentStatus @default(PENDING)
+  signatureVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model AuditionPass {
+  id String @id @default(cuid())
+  auditionId String
+  artistId String
+  audition Audition @relation(fields:[auditionId], references:[id])
+  passNumber String @unique
+  qrPayload String
+  checkedInAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Conversation {
+  id String @id @default(cuid())
+  participantIds String[]
+  messages Message[]
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id String @id @default(cuid())
+  conversationId String
+  conversation Conversation @relation(fields:[conversationId], references:[id], onDelete:Cascade)
+  senderId String
+  sender User @relation("SentMessages", fields:[senderId], references:[id])
+  body String
+  createdAt DateTime @default(now())
+  @@index([conversationId, createdAt])
+}
+
+model Notification {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  title String
+  body String
+  readAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([userId, readAt])
+}
+
+model Review {
+  id String @id @default(cuid())
+  venueId String
+  venue Venue @relation(fields:[venueId], references:[id], onDelete:Cascade)
+  bookingId String @unique
+  rating Int
+  comment String?
+  createdAt DateTime @default(now())
+}
+
+model SavedItem {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields:[userId], references:[id], onDelete:Cascade)
+  itemType String
+  itemId String
+  createdAt DateTime @default(now())
+  @@unique([userId, itemType, itemId])
+}
+
+model Report {
+  id String @id @default(cuid())
+  reporterId String
+  reporter User @relation("Reporter", fields:[reporterId], references:[id])
+  targetType String
+  targetId String
+  reason String
+  resolvedAt DateTime?
+  createdAt DateTime @default(now())
+}
+
+model VerificationRequest {
+  id String @id @default(cuid())
+  userId String
+  entityType String
+  documentUrl String
+  status VerificationStatus @default(PENDING)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+  actorId String
+  action String
+  entityType String
+  entityId String
+  createdAt DateTime @default(now())
+}
