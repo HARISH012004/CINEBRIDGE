@@ -33,6 +33,8 @@ The frontend includes three demo portals. Open `/login`, choose a portal tab, an
 
 Signup and demo actions such as audition applications and venue booking requests are stored in that browser's local storage. They are for demonstration only; they do not create server accounts, send applications, contact users, reserve venues, or process payments. Use the backend setup and deployment steps below for server-backed functionality.
 
+Sample casting calls use illustrative local artwork, not official posters or images from real productions. Application and booking acknowledgements display demo reference numbers for the browser-local record; they are not production submissions, confirmed reservations, invoices, or proof of payment.
+
 ### Backend
 
 ```powershell

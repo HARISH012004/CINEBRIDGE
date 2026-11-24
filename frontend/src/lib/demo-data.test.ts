@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { artists, auditions, dashboardForRole, demoAccounts, venues } from "./demo-data";
+import { artists, auditions, createDemoReference, dashboardForRole, demoAccounts, venues } from "./demo-data";
 
 describe("CINEBRIDGE demo experience", () => {
   it("provides a separate sign-in account and workspace for each portal", () => {
@@ -25,5 +25,14 @@ describe("CINEBRIDGE demo experience", () => {
     expect(auditions.every(call => call.city && call.role && call.description)).toBe(true);
     expect(artists.every(person => person.city && person.skills.length > 0)).toBe(true);
     expect(venues.every(place => place.city && place.rate > 0)).toBe(true);
+  });
+
+  it("provides local artwork for every sample call and unique demo receipts", () => {
+    expect(auditions.every(call => call.image.startsWith("/posters/"))).toBe(true);
+    for (const kind of ["APP", "BKG"] as const) {
+      const references = Array.from({ length: 20 }, () => createDemoReference(kind));
+      expect(references.every(reference => new RegExp(`^CB-${kind}-[A-F0-9]{8}$`).test(reference))).toBe(true);
+      expect(new Set(references).size).toBe(references.length);
+    }
   });
 });
