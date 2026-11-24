@@ -24,13 +24,13 @@ const menu: { href: string; title: string; icon: typeof LayoutDashboard; roles: 
 export function WorkspaceShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const session = useDemoSession();
+  const { session, ready } = useDemoSession();
 
   useEffect(() => {
-    if (!session) router.replace("/login");
-  }, [router, session]);
+    if (ready && !session) router.replace("/login");
+  }, [ready, router, session]);
 
-  if (!session) return <div className="flex min-h-screen items-center justify-center bg-[#090a0d] text-sm text-white/55">Opening your CINEBRIDGE workspace…</div>;
+  if (!ready || !session) return <div className="flex min-h-screen items-center justify-center bg-[#090a0d] text-sm text-white/55">Opening your CINEBRIDGE workspace…</div>;
   const base = dashboardForRole(session.role);
   const roleLinks = menu.filter(item => item.roles.includes(session.role));
   const activeSection = pathname.split("/").pop();

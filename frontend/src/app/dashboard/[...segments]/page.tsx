@@ -17,7 +17,7 @@ function stored<T>(key: string, fallback: T): T {
 
 function DashboardWorkspace({ section }: { section: string }) {
   const router=useRouter();
-  const session=useDemoSession();
+  const {session,ready}=useDemoSession();
   const [notice,setNotice]=useState("");
   const [applications,setApplications]=useState<string[]>(()=>stored("cinebridge_demo_applications",[]));
   const [bookings]=useState<DemoBooking[]>(()=>stored("cinebridge_demo_bookings",[]));
@@ -46,7 +46,7 @@ function DashboardWorkspace({ section }: { section: string }) {
     if(!session||session.role!=="ARTIST"){router.push("/login?role=artist");return;}
     const next=Array.from(new Set([...applications,id]));setApplications(next);localStorage.setItem("cinebridge_demo_applications",JSON.stringify(next));notify("Demo application added to your tracker.");
   }
-  if(!session)return <WorkspaceShell><div className="py-20 text-center text-sm text-white/50">Opening workspace…</div></WorkspaceShell>;
+  if(!ready||!session)return <WorkspaceShell><div className="py-20 text-center text-sm text-white/50">Opening workspace…</div></WorkspaceShell>;
 
   return <WorkspaceShell>
     <div className="mb-7 flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-[9px] uppercase tracking-[.25em] text-[#d6b36a]">{roleLabel} portal · Demo data</p><h1 className="mt-2 text-3xl font-medium md:text-4xl">{heading[current]||heading.overview}</h1><p className="mt-2 text-xs text-white/45">Good to see you, {session.name}. This is your interactive sample workspace.</p></div><Link href="/" className="inline-flex items-center gap-2 text-[10px] text-white/45 hover:text-[#dfc47f]">Public CINEBRIDGE <ArrowRight size={13}/></Link></div>
