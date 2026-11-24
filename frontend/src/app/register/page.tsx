@@ -1,39 +1,53 @@
 "use client";
-import { useState } from "react";
-import { Clapperboard, Camera, MapPin, ArrowRight } from "lucide-react";
 
-export default function Register() {
-  const [role,setRole]=useState("ARTIST");
-  const [busy,setBusy]=useState(false);
-  const [message,setMessage]=useState("");
-  async function submit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault(); setBusy(true); setMessage("");
-    const form=new FormData(e.currentTarget);
-    try {
-      const res=await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000"}/api/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},credentials:"include",body:JSON.stringify({name:form.get("name"),email:form.get("email"),password:form.get("password"),role})});
-      const data=await res.json();
-      if(!res.ok) throw new Error(data.error || "Registration failed");
-      setMessage("Account created. Welcome to CINEBRIDGE.");
-    } catch(err:any){ setMessage(err.message); } finally { setBusy(false); }
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { ArrowRight, Camera, Check, Clapperboard, MapPin, ShieldCheck } from "lucide-react";
+import { dashboardForRole, PortalRole, setStoredSession } from "@/lib/demo-data";
+import { PublicLayout } from "@/components/site-shell";
+
+const roles: { role: PortalRole; title: string; text: string; icon: typeof Clapperboard }[] = [
+  { role: "FILMMAKER", title: "Director / Producer", text: "Build a cast, publish a call and move a production forward.", icon: Clapperboard },
+  { role: "ARTIST", title: "Artist / Participant", text: "Show your work, discover opportunities and apply.", icon: Camera },
+  { role: "VENUE_OWNER", title: "Event / Venue Partner", text: "Showcase a space and manage booking enquiries.", icon: MapPin },
+];
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [role, setRole] = useState<PortalRole>("ARTIST");
+  const [error, setError] = useState("");
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = new FormData(event.currentTarget);
+    const name = String(form.get("name")).trim();
+    const email = String(form.get("email")).trim().toLowerCase();
+    const password = String(form.get("password"));
+    if (password.length < 8) { setError("Use a password with at least 8 characters."); return; }
+    const accounts = JSON.parse(localStorage.getItem("cinebridge_demo_accounts") || "[]") as { email: string; password: string; name: string; role: PortalRole }[];
+    if (accounts.some(account => account.email === email)) { setError("This email already has a demo account. Sign in instead."); return; }
+    accounts.push({ name, email, password, role });
+    localStorage.setItem("cinebridge_demo_accounts", JSON.stringify(accounts));
+    setStoredSession(role, name);
+    router.push(dashboardForRole(role));
   }
-  const roles=[
-    {value:"FILMMAKER",title:"Filmmaker",text:"Cast talent and manage productions",icon:Clapperboard},
-    {value:"ARTIST",title:"Artist",text:"Build your portfolio and audition",icon:Camera},
-    {value:"VENUE_OWNER",title:"Venue Partner",text:"List spaces and manage bookings",icon:MapPin},
-  ];
-  return <main className="min-h-screen bg-[#08090d] px-5 py-10">
-    <a href="/" className="mx-auto flex w-fit items-center gap-3 text-sm font-bold tracking-[.2em]"><Clapperboard className="text-[#d6b36a]" size={24}/>CINEBRIDGE</a>
-    <div className="mx-auto mt-10 max-w-5xl">
-      <p className="text-center text-[10px] uppercase tracking-[.35em] text-[#d6b36a]">Choose your portal</p><h1 className="mt-3 text-center text-4xl md:text-5xl">Join CINEBRIDGE</h1>
-      <div className="mt-8 grid gap-3 md:grid-cols-3">{roles.map(r=>{const Icon=r.icon;return <button key={r.value} onClick={()=>setRole(r.value)} className={`rounded-2xl border p-5 text-left transition ${role===r.value?"border-[#d6b36a] bg-[#d6b36a]/10":"border-white/10 bg-[#11131a]"}`}><Icon className={role===r.value?"text-[#d6b36a]":"text-white/50"} size={28}/><strong className="mt-5 block">{r.title}</strong><span className="mt-1 block text-sm text-white/45">{r.text}</span></button>})}</div>
-      <form onSubmit={submit} className="mx-auto mt-6 grid max-w-xl gap-4 rounded-2xl border border-white/10 bg-[#11131a] p-5 md:p-7">
-        <input name="name" required placeholder="Full name" className="rounded-xl border border-white/10 bg-black/20 px-4 py-4 outline-none focus:border-[#d6b36a]"/>
-        <input name="email" type="email" required placeholder="Email address" className="rounded-xl border border-white/10 bg-black/20 px-4 py-4 outline-none focus:border-[#d6b36a]"/>
-        <input name="password" type="password" required minLength={8} placeholder="Password (minimum 8 characters)" className="rounded-xl border border-white/10 bg-black/20 px-4 py-4 outline-none focus:border-[#d6b36a]"/>
-        {message&&<p className="rounded-lg bg-white/5 px-4 py-3 text-sm">{message}</p>}
-        <button disabled={busy} className="flex items-center justify-center gap-2 rounded-full bg-[#d6b36a] py-4 text-sm font-bold text-black">{busy?"Creating account...":"Create account"}<ArrowRight size={16}/></button>
-        <p className="text-center text-sm text-white/45">Already registered? <a href="/login" className="text-[#d6b36a]">Log in</a></p>
-      </form>
+
+  return <PublicLayout><main className="min-h-[calc(100vh-170px)] bg-[radial-gradient(ellipse_at_50%_0%,rgba(107,35,45,.24),transparent_45%)] px-4 py-9 md:py-14">
+    <div className="mx-auto max-w-5xl">
+      <div className="text-center"><p className="text-[10px] uppercase tracking-[.34em] text-[#d6b36a]">Make your entrance</p><h1 className="mt-3 text-4xl font-medium md:text-5xl">Find your place in the picture</h1><p className="mt-3 text-sm text-white/50">Choose your portal and create an interactive demo account.</p></div>
+      <div className="mt-8 grid gap-3 md:grid-cols-3">{roles.map(item => { const Icon = item.icon; const active = role === item.role; return <button key={item.role} type="button" onClick={() => setRole(item.role)} className={`rounded-2xl border p-5 text-left transition ${active ? "border-[#d6b36a]/60 bg-[#d6b36a]/[.08]" : "border-white/10 bg-[#111217] hover:border-white/25"}`}><div className="flex items-center justify-between"><Icon size={24} className={active ? "text-[#d6b36a]" : "text-white/45"}/>{active && <Check size={16} className="text-[#d6b36a]"/>}</div><strong className="mt-5 block text-sm">{item.title}</strong><span className="mt-2 block text-xs leading-5 text-white/45">{item.text}</span></button>; })}</div>
+      <div className="mx-auto mt-5 grid max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#111217] md:grid-cols-[1fr_.8fr]">
+        <form onSubmit={submit} className="grid gap-4 p-6 md:p-8"><h2 className="text-xl">Create your demo profile</h2>
+          <label className="grid gap-2 text-xs text-white/55">Full name<input name="name" required minLength={2} maxLength={100} autoComplete="name" placeholder="Your professional name" className="rounded-xl border border-white/10 bg-black/25 px-4 py-3.5 text-sm text-white outline-none focus:border-[#d6b36a]/60"/></label>
+          <label className="grid gap-2 text-xs text-white/55">Email address<input name="email" type="email" required autoComplete="email" placeholder="you@example.com" className="rounded-xl border border-white/10 bg-black/25 px-4 py-3.5 text-sm text-white outline-none focus:border-[#d6b36a]/60"/></label>
+          <label className="grid gap-2 text-xs text-white/55">Password<input name="password" type="password" required minLength={8} autoComplete="new-password" placeholder="At least 8 characters" className="rounded-xl border border-white/10 bg-black/25 px-4 py-3.5 text-sm text-white outline-none focus:border-[#d6b36a]/60"/></label>
+          {error && <p role="alert" className="rounded-lg border border-rose-400/20 bg-rose-950/25 p-3 text-xs text-rose-200">{error}</p>}
+          <button className="mt-1 flex items-center justify-center gap-2 rounded-full bg-[#d6b36a] px-5 py-3.5 text-xs font-bold text-[#171109] transition hover:bg-[#efd48f]">Create profile <ArrowRight size={15}/></button>
+          <p className="text-center text-xs text-white/45">Already have an account? <Link href="/login" className="text-[#d6b36a]">Sign in</Link></p>
+        </form>
+        <aside className="border-t border-white/[.07] bg-[linear-gradient(145deg,rgba(86,28,37,.24),rgba(17,18,23,.45))] p-6 md:border-l md:border-t-0 md:p-8"><ShieldCheck className="text-[#d6b36a]" size={20}/><h3 className="mt-4 text-lg">A safe demo space</h3><p className="mt-2 text-xs leading-5 text-white/50">This signup creates a browser-only demo profile so you can explore the role dashboard. It does not create a verified production account.</p><div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4"><span className="text-[9px] uppercase tracking-[.18em] text-white/40">Selected portal</span><strong className="mt-1 block text-sm">{roles.find(item => item.role === role)?.title}</strong></div><p className="mt-5 text-[10px] leading-4 text-white/35">Your local demo account can be used again in this browser. Never enter payment details in this demo.</p></aside>
+      </div>
     </div>
-  </main>
+  </main></PublicLayout>;
 }

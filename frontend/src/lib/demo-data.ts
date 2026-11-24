@@ -1,0 +1,60 @@
+export type PortalRole = "FILMMAKER" | "ARTIST" | "VENUE_OWNER";
+
+export const demoAccounts: Record<PortalRole, { label: string; email: string; password: string; name: string }> = {
+  FILMMAKER: { label: "Filmmaker", email: "director@cinebridge.demo", password: "Cinema@2026", name: "Arun Prakash" },
+  ARTIST: { label: "Artist", email: "artist@cinebridge.demo", password: "Cinema@2026", name: "Kavya Raman" },
+  VENUE_OWNER: { label: "Event Partner", email: "venue@cinebridge.demo", password: "Cinema@2026", name: "Meena Studios" },
+};
+
+export const auditions = [
+  { id: "marudham", name: "Marudham — A Tamil Feature Film", role: "Lead Actress · Meera", type: "Feature film", city: "Chennai", language: "Tamil", age: "22–30", date: "Dec 08, 2026", fee: "Free", deadline: "Dec 02", description: "A rooted drama about a young agricultural scientist returning to her native village. The production is looking for a performer fluent in Tamil with strong emotional range. Screen test at a Chennai studio.", skills: ["Acting", "Tamil", "Emotional range"], color: "from-rose-950 via-red-950 to-stone-950" },
+  { id: "isaikuyil", name: "Isaikuyil — Independent Music Video", role: "Dancers · Ensemble", type: "Music video", city: "Coimbatore", language: "Tamil", age: "18–32", date: "Dec 12, 2026", fee: "Free", deadline: "Dec 06", description: "A contemporary folk fusion video celebrating Kongu culture. Seeking trained dancers for a two-day shoot. Folk and contemporary experience are welcome.", skills: ["Dance", "Folk", "Movement"], color: "from-amber-950 via-orange-950 to-stone-950" },
+  { id: "vadamalli", name: "Vadamalli — Limited Series", role: "Supporting Artist · Selvam", type: "Web series", city: "Madurai", language: "Tamil", age: "30–48", date: "Dec 16, 2026", fee: "Free", deadline: "Dec 10", description: "A character-driven mystery series set in the streets of Madurai. Looking for a grounded performer with a natural Madurai Tamil dialect. Audition scenes are provided after shortlisting.", skills: ["Acting", "Dialect", "Theatre"], color: "from-indigo-950 via-slate-950 to-stone-950" },
+  { id: "kaatru", name: "Kaatru — Travel Brand Campaign", role: "Models · 2 openings", type: "Advertisement", city: "Chennai", language: "Tamil / English", age: "20–35", date: "Dec 19, 2026", fee: "Free", deadline: "Dec 14", description: "A travel and lifestyle campaign shooting across Tamil Nadu's coast. Selected talent will receive the project brief and confirmed day rate before accepting.", skills: ["Modelling", "On-camera", "Tamil"], color: "from-cyan-950 via-slate-950 to-stone-950" },
+  { id: "therukoothu", name: "Therukoothu — Documentary Short", role: "Voice artist · Narrator", type: "Short film", city: "Thanjavur", language: "Tamil", age: "25–60", date: "Dec 22, 2026", fee: "Free", deadline: "Dec 16", description: "An independent documentary preserving the art of street theatre. Seeking a warm, expressive Tamil voice for a recorded narration session.", skills: ["Voice", "Narration", "Tamil"], color: "from-emerald-950 via-teal-950 to-stone-950" },
+  { id: "nizhal", name: "Nizhal — Crime Drama", role: "Cinematographer", type: "Feature film", city: "Tiruchirappalli", language: "Tamil", age: "All ages", date: "Jan 05, 2027", fee: "Free", deadline: "Dec 28", description: "An independent crime drama is inviting cinematographers to share a reel and join a creative conversation with the director and producer.", skills: ["Cinematography", "Lighting", "Colour"], color: "from-violet-950 via-fuchsia-950 to-stone-950" },
+];
+
+export const artists = [
+  { id: "kavya-raman", name: "Kavya Raman", role: "Actor · Dancer", city: "Chennai", languages: "Tamil, English, Malayalam", skills: ["Screen acting", "Bharatanatyam", "Dialect"], initials: "KR", color: "bg-rose-950" },
+  { id: "aravind-kumar", name: "Aravind Kumar", role: "Actor · Theatre artist", city: "Madurai", languages: "Tamil, English", skills: ["Theatre", "Comedy", "Madurai dialect"], initials: "AK", color: "bg-blue-950" },
+  { id: "nithya-s", name: "Nithya S.", role: "Playback singer · Voice artist", city: "Coimbatore", languages: "Tamil, Kannada, English", skills: ["Playback", "Carnatic", "Voice-over"], initials: "NS", color: "bg-emerald-950" },
+  { id: "surya-dev", name: "Surya Dev", role: "Cinematographer", city: "Chennai", languages: "Tamil, Telugu, English", skills: ["Cinematography", "Colour grading", "Lighting"], initials: "SD", color: "bg-amber-950" },
+  { id: "priya-mani", name: "Priya Mani", role: "Model · Actor", city: "Salem", languages: "Tamil, English", skills: ["Commercial", "Print", "Screen acting"], initials: "PM", color: "bg-violet-950" },
+  { id: "vijay-anand", name: "Vijay Anand", role: "Editor · Assistant director", city: "Tiruchirappalli", languages: "Tamil, English", skills: ["Editing", "Storyboarding", "DaVinci Resolve"], initials: "VA", color: "bg-teal-950" },
+];
+
+export const venues = [
+  { id: "meenakshi-stage", name: "Meenakshi Stage & Studio", city: "Chennai", category: "Film studio", capacity: 120, rate: 3500, rating: "4.9", features: ["Cyclorama", "Lighting grid", "Makeup room"], initials: "MS", color: "from-amber-950 to-red-950" },
+  { id: "vaigai-auditorium", name: "Vaigai Arts Auditorium", city: "Madurai", category: "Auditorium", capacity: 240, rate: 5000, rating: "4.8", features: ["Stage", "Green room", "Parking"], initials: "VA", color: "from-indigo-950 to-slate-900" },
+  { id: "kongu-creative", name: "Kongu Creative House", city: "Coimbatore", category: "Photography studio", capacity: 45, rate: 2200, rating: "4.7", features: ["Natural light", "Soundproof", "AC"], initials: "KC", color: "from-emerald-950 to-teal-950" },
+  { id: "cauvery-convention", name: "Cauvery Convention Hall", city: "Tiruchirappalli", category: "Event hall", capacity: 180, rate: 3000, rating: "4.6", features: ["Parking", "Projector", "Accessible"], initials: "CC", color: "from-rose-950 to-stone-900" },
+  { id: "thanjai-open-air", name: "Thanjai Open-Air Courtyard", city: "Thanjavur", category: "Outdoor location", capacity: 80, rate: 1800, rating: "4.8", features: ["Heritage setting", "Power", "Changing room"], initials: "TO", color: "from-orange-950 to-amber-950" },
+  { id: "yercaud-picture", name: "Yercaud Picture House", city: "Salem", category: "Production space", capacity: 60, rate: 2400, rating: "4.7", features: ["Hill views", "Green room", "Equipment"], initials: "YP", color: "from-sky-950 to-blue-950" },
+];
+
+export const tamilNaduCities = ["All cities", "Chennai", "Madurai", "Coimbatore", "Tiruchirappalli", "Salem", "Tirunelveli", "Erode", "Thanjavur", "Dindigul", "Vellore", "Kanyakumari"];
+
+export function getStoredSession(): { role: PortalRole; name: string } | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem("cinebridge_demo_session");
+    return stored ? JSON.parse(stored) as { role: PortalRole; name: string } : null;
+  } catch {
+    return null;
+  }
+}
+
+export function setStoredSession(role: PortalRole, name: string) {
+  localStorage.setItem("cinebridge_demo_session", JSON.stringify({ role, name }));
+  window.dispatchEvent(new Event("cinebridge-session-change"));
+}
+
+export function clearStoredSession() {
+  localStorage.removeItem("cinebridge_demo_session");
+  window.dispatchEvent(new Event("cinebridge-session-change"));
+}
+
+export function dashboardForRole(role: PortalRole) {
+  return `/dashboard/${role.toLowerCase().replace("_", "-")}`;
+}

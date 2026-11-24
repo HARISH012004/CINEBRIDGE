@@ -21,6 +21,18 @@ npm run dev
 
 Open `http://localhost:3000`.
 
+### Click-through demo
+
+The frontend includes three demo portals. Open `/login`, choose a portal tab, and use its sample account:
+
+| Portal | Email | Password |
+| --- | --- | --- |
+| Filmmaker / director | `director@cinebridge.demo` | `Cinema@2026` |
+| Artist / participant | `artist@cinebridge.demo` | `Cinema@2026` |
+| Venue / event partner | `venue@cinebridge.demo` | `Cinema@2026` |
+
+Signup and demo actions such as audition applications and venue booking requests are stored in that browser's local storage. They are for demonstration only; they do not create server accounts, send applications, contact users, reserve venues, or process payments. Use the backend setup and deployment steps below for server-backed functionality.
+
 ### Backend
 
 ```powershell

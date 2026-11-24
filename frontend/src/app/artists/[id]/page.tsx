@@ -1,0 +1,18 @@
+"use client";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { Suspense } from "react";
+import { ArrowLeft, ArrowRight, Camera, MapPin, MessageSquare, ShieldCheck } from "lucide-react";
+import { PublicLayout } from "@/components/site-shell";
+import { artists } from "@/lib/demo-data";
+
+function ArtistDetailContent(){
+ const params=useParams<{id:string}>();
+ const person=artists.find(item=>item.id===params.id);
+ if(!person)return <PublicLayout><main className="mx-auto min-h-[65vh] max-w-3xl px-5 py-20 text-center"><h1 className="text-3xl">Profile not found</h1><p className="mt-3 text-sm text-white/50">Browse the demo artist directory to see available profiles.</p><Link className="mt-6 inline-flex items-center gap-2 text-sm text-[#dfc47f]" href="/artists">Explore artists <ArrowRight size={14}/></Link></main></PublicLayout>;
+ return <PublicLayout><main className="mx-auto max-w-5xl px-5 py-9 lg:px-8 lg:py-12"><Link href="/artists" className="inline-flex items-center gap-2 text-xs text-white/45"><ArrowLeft size={14}/>All artists</Link><section className="mt-6 overflow-hidden rounded-3xl border border-white/[.08] bg-[#111217]"><div className={`h-48 bg-gradient-to-r ${person.color} to-[#111217]`}/><div className="px-6 pb-7 md:px-9"><div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between"><div className="flex items-end gap-4"><span className={`flex size-24 items-center justify-center rounded-2xl border-4 border-[#111217] ${person.color} font-serif text-2xl text-[#e2c47a]`}>{person.initials}</span><div className="pb-1"><h1 className="text-2xl font-medium">{person.name}</h1><p className="mt-1 text-sm text-white/50">{person.role}</p></div></div><Link href="/login?role=filmmaker" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#d6b36a] px-5 py-3 text-xs font-bold text-black"><MessageSquare size={14}/>Contact through demo</Link></div><p className="mt-6 flex items-center gap-2 text-xs text-white/45"><MapPin size={14}/>{person.city}, Tamil Nadu <span className="text-white/20">·</span><ShieldCheck size={13} className="text-[#d6b36a]"/>Sample portfolio</p></div></section><div className="mt-5 grid gap-5 md:grid-cols-[1.2fr_.8fr]"><article className="rounded-2xl border border-white/[.08] bg-[#111217] p-6"><h2 className="text-lg">Creative profile</h2><p className="mt-3 text-sm leading-7 text-white/55">{person.name} is a {person.role.toLowerCase()} based in {person.city}. This sample portfolio is here to demonstrate how creative professionals can present their disciplines, languages and experience to the Tamil film community.</p><h3 className="mt-7 text-[10px] uppercase tracking-[.18em] text-white/40">Selected skills</h3><div className="mt-3 flex flex-wrap gap-2">{person.skills.map(skill=><span key={skill} className="rounded-full border border-white/10 px-3 py-2 text-[10px] text-white/65">{skill}</span>)}</div></article><aside className="rounded-2xl border border-white/[.08] bg-[#111217] p-6"><Camera size={19} className="text-[#d6b36a]"/><h2 className="mt-4 text-lg">Languages & location</h2><p className="mt-3 text-xs text-white/40">Languages</p><p className="mt-1 text-sm">{person.languages}</p><p className="mt-4 text-xs text-white/40">Available for</p><p className="mt-1 text-sm">Tamil Nadu productions · Demo profile</p><Link href="/auditions" className="mt-6 flex items-center justify-between border-t border-white/[.08] pt-4 text-xs text-[#dfc47f]">Browse open auditions <ArrowRight size={14}/></Link></aside></div></main></PublicLayout>;
+}
+
+export default function ArtistDetailPage(){
+ return <Suspense fallback={<div className="min-h-screen bg-[#090a0d]"/>}><ArtistDetailContent/></Suspense>;
+}

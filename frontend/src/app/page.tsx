@@ -1,138 +1,58 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Clapperboard, MapPin, Search, Sparkles, Star, Users, Volume2, VolumeX } from "lucide-react";
-
-const cards = [
-  { tag:"FEATURED AUDITION", title:"Lead Artist — Period Drama", meta:"Chennai • 18–30 • Paid", date:"DEC 08", accent:"from-amber-200/10" },
-  { tag:"CASTING CALL", title:"Music Video Ensemble", meta:"Coimbatore • All genders", date:"DEC 12", accent:"from-red-800/20" },
-  { tag:"WEB SERIES", title:"Character Artists Needed", meta:"Madurai • 25–45 • Free", date:"DEC 16", accent:"from-blue-900/30" },
-];
+import Link from "next/link";
+import { ArrowDown, ArrowRight, BadgeCheck, CalendarDays, Camera, Clapperboard, MapPin, Sparkles, Users } from "lucide-react";
+import { PublicLayout } from "@/components/site-shell";
+import { auditions, artists, venues } from "@/lib/demo-data";
 
 export default function Home() {
-  const [intro, setIntro] = useState(true);
-  const [muted, setMuted] = useState(false);
-  const [menu, setMenu] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("cinebridge_intro_seen") === "1") setIntro(false);
-  }, []);
-
-  const enter = () => {
-    localStorage.setItem("cinebridge_intro_seen", "1");
-    setIntro(false);
-  };
-
-  return (
-    <>
-      <AnimatePresence>
-        {intro && (
-          <motion.section
-            initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.04 }}
-            transition={{ duration: 0.8 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-[#050506]"
-          >
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(214,179,106,.16),transparent_42%)]" />
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay:.15,duration:1.2,ease:"easeOut" }}
-              className="absolute left-0 top-0 h-full w-1/2 origin-left border-r border-[#d6b36a]/20 bg-[linear-gradient(90deg,#090909,#21090d)]" />
-            <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay:.15,duration:1.2,ease:"easeOut" }}
-              className="absolute right-0 top-0 h-full w-1/2 origin-right border-l border-[#d6b36a]/20 bg-[linear-gradient(-90deg,#090909,#21090d)]" />
-            <button onClick={() => setMuted(!muted)} className="absolute right-5 top-5 z-20 rounded-full border border-white/10 p-3 text-white/70">
-              {muted ? <VolumeX size={18}/> : <Volume2 size={18}/>}
-            </button>
-            <button onClick={enter} className="absolute right-5 top-16 z-20 text-xs uppercase tracking-[.25em] text-white/50">Skip intro</button>
-            <motion.div initial={{ opacity:0, y:24, filter:"blur(12px)" }} animate={{ opacity:1,y:0,filter:"blur(0)" }} transition={{ delay:1.1,duration:.8 }}
-              className="relative z-10 max-w-xl px-6 text-center">
-              <motion.div animate={{ rotate:360 }} transition={{ duration:18,repeat:Infinity,ease:"linear" }}
-                className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full border border-[#d6b36a]/40 text-[#d6b36a]">
-                <Clapperboard size={38}/>
-              </motion.div>
-              <p className="mb-3 text-[10px] uppercase tracking-[.55em] text-[#d6b36a]">The cinema of opportunity</p>
-              <h1 className="text-5xl font-semibold tracking-[.12em] md:text-7xl">CINEBRIDGE</h1>
-              <p className="mt-5 text-lg text-white/65">Every Dream Has a Screen.</p>
-              <button onClick={enter} className="mt-10 inline-flex items-center gap-3 rounded-full border border-[#d6b36a]/50 bg-[#d6b36a]/10 px-7 py-4 text-xs font-bold uppercase tracking-[.22em] text-[#f1d99a] transition hover:bg-[#d6b36a] hover:text-black">
-                Enter CINEBRIDGE <ArrowRight size={16}/>
-              </button>
-            </motion.div>
-          </motion.section>
-        )}
-      </AnimatePresence>
-
-      <div className={intro ? "invisible" : "visible"}>
-        <header className="fixed left-0 right-0 top-0 z-50 border-b border-white/[.07] bg-[#08090d]/85 backdrop-blur-xl">
-          <nav className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-5 lg:px-10">
-            <a href="#" className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#d6b36a]/50 text-[#d6b36a]"><Clapperboard size={18}/></span>
-              <span className="text-sm font-bold tracking-[.22em]">CINEBRIDGE</span>
-            </a>
-            <div className="hidden items-center gap-7 text-[12px] font-medium text-white/72 lg:flex">
-              <a className="text-[#d6b36a]" href="#">Home</a><a href="#auditions">Auditions</a><a href="/artists">Artists</a><a href="/venues">Venues</a><a href="#opportunities">Opportunities</a><a href="#about">About</a>
+  return <PublicLayout>
+    <main>
+      <section className="relative min-h-[690px] overflow-hidden border-b border-white/[.06] lg:min-h-[760px]">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(8,9,13,.97)_0%,rgba(8,9,13,.82)_47%,rgba(8,9,13,.38)_100%),linear-gradient(0deg,#090a0d_0%,transparent_38%),url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=2000&q=85')] bg-cover bg-center"/>
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_68%_30%,rgba(168,112,54,.17),transparent_35%)]"/>
+        <div className="relative mx-auto flex min-h-[690px] max-w-7xl items-end px-5 pb-20 pt-24 lg:min-h-[760px] lg:px-8 lg:pb-24">
+          <div className="max-w-3xl">
+            <div className="mb-6 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[.34em] text-[#e2c47a]"><span className="h-px w-10 bg-[#d6b36a]"/>An industry connected, a dream within reach</div>
+            <h1 className="text-[clamp(3.25rem,8vw,7.8rem)] font-medium leading-[.91] tracking-[-.065em]">TAMIL CINEMA.<br/><span className="font-serif italic text-[#d8b568]">Wider horizons.</span></h1>
+            <p className="mt-7 max-w-xl text-sm leading-7 text-white/65 md:text-base">The people, places and possibilities behind every great story — brought together in one trusted creative network.</p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/auditions" className="flex items-center justify-center gap-2 rounded-full bg-[#d6b36a] px-6 py-4 text-[11px] font-bold uppercase tracking-[.13em] text-[#171109] transition hover:bg-[#efd48f]">Discover casting calls <ArrowRight size={15}/></Link>
+              <Link href="/register" className="flex items-center justify-center rounded-full border border-white/25 bg-black/10 px-6 py-4 text-[11px] font-semibold uppercase tracking-[.13em] transition hover:border-[#d6b36a]/60 hover:text-[#efd48f]">Choose your portal</Link>
             </div>
-            <div className="hidden items-center gap-3 lg:flex">
-              <a href="/login" className="px-4 py-3 text-xs">Login</a>
-              <a href="/register" className="rounded-full bg-[#d6b36a] px-5 py-3 text-xs font-bold text-[#15110a]">Join CINEBRIDGE</a>
-            </div>
-            <button onClick={() => setMenu(!menu)} className="text-xs uppercase tracking-widest lg:hidden">Menu</button>
-          </nav>
-          {menu && <div className="grid border-t border-white/10 bg-[#08090d] p-5 text-sm lg:hidden">
-            <a href="#auditions" className="border-b border-white/10 py-4">Discover Auditions</a><a href="/artists" className="border-b border-white/10 py-4">Explore Artists</a><a href="/venues" className="border-b border-white/10 py-4">Find Venues</a><a href="/login" className="border-b border-white/10 py-4">Login</a><a href="/register" className="py-4 text-[#d6b36a]">Join CINEBRIDGE</a>
-          </div>}
-        </header>
+            <Link href="#discover" className="mt-12 inline-flex items-center gap-2 text-[10px] uppercase tracking-[.22em] text-white/40 hover:text-white/80">Explore the network <ArrowDown size={13}/></Link>
+          </div>
+          <div className="absolute bottom-8 right-8 hidden rounded-2xl border border-white/10 bg-[#090a0d]/65 p-4 backdrop-blur-md xl:block"><div className="flex items-center gap-3"><span className="flex size-9 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-300"><BadgeCheck size={18}/></span><div><p className="text-[10px] font-semibold">Opportunity first</p><p className="mt-1 text-[9px] text-white/45">Clear details. Safer connections.</p></div></div></div>
+        </div>
+      </section>
 
-        <main>
-          <section className="cinema-grain relative flex min-h-[780px] items-end overflow-hidden pt-24 md:min-h-[720px]">
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1800&q=85')] bg-cover bg-center" />
-            <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(5,6,10,.96)_0%,rgba(7,8,12,.72)_48%,rgba(7,8,12,.22)_100%),linear-gradient(0deg,#08090d_0%,transparent_35%)]" />
-            <div className="relative mx-auto w-full max-w-[1440px] px-5 pb-24 md:px-10 md:pb-28">
-              <motion.div initial={{opacity:0,x:-30}} animate={{opacity:1,x:0}} transition={{delay:.2,duration:.8}} className="max-w-3xl">
-                <div className="mb-6 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.38em] text-[#d6b36a]"><span className="h-px w-12 bg-[#d6b36a]"/>India&apos;s Cinema Network</div>
-                <h1 className="max-w-3xl text-5xl leading-[.98] tracking-tight sm:text-6xl md:text-8xl">THE NEXT BIG <span className="gold-text italic">STAR</span><br/>COULD BE YOU.</h1>
-                <p className="mt-7 max-w-xl text-base leading-7 text-white/68 md:text-lg">Discover auditions, connect with filmmakers, showcase your talent and find the perfect production spaces — all in one cinematic ecosystem.</p>
-                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                  <a href="#auditions" className="flex items-center justify-center gap-3 rounded-full bg-[#d6b36a] px-7 py-4 text-xs font-bold uppercase tracking-[.16em] text-[#171109]">Explore Auditions <ArrowRight size={16}/></a>
-                  <a href="/artists" className="flex items-center justify-center gap-3 rounded-full border border-white/25 px-7 py-4 text-xs font-bold uppercase tracking-[.16em]">Find Talent</a>
-                  <a href="/venues" className="flex items-center justify-center gap-3 rounded-full border border-white/25 px-7 py-4 text-xs font-bold uppercase tracking-[.16em]">List Your Venue</a>
-                </div>
-              </motion.div>
-            </div>
-          </section>
+      <section id="discover" className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><p className="text-[9px] uppercase tracking-[.28em] text-[#d6b36a]">The CINEBRIDGE network</p><h2 className="mt-3 text-3xl font-medium tracking-tight md:text-4xl">One creative community.<br className="hidden sm:block"/> Three ways in.</h2></div><p className="max-w-md text-sm leading-6 text-white/45">Whether you cast the story, bring it to life, or give it a place to happen — there’s a home for you here.</p></div>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {[{ title:"Filmmakers", icon:Clapperboard, href:"/login?role=filmmaker", text:"Publish casting calls, discover talent and build your next production." },{ title:"Artists", icon:Camera, href:"/login?role=artist", text:"Create a portfolio, find real opportunities and track every application." },{ title:"Event & venue partners", icon:MapPin, href:"/login?role=venue-owner", text:"Showcase your location and manage transparent booking enquiries." }].map(item => {const Icon=item.icon;return <Link key={item.title} href={item.href} className="group rounded-2xl border border-white/[.09] bg-[#111217] p-6 transition hover:-translate-y-1 hover:border-[#d6b36a]/35"><span className="flex size-11 items-center justify-center rounded-xl border border-[#d6b36a]/20 bg-[#d6b36a]/[.06] text-[#d6b36a]"><Icon size={20}/></span><h3 className="mt-5 text-lg">{item.title}</h3><p className="mt-2 min-h-12 text-xs leading-5 text-white/45">{item.text}</p><span className="mt-5 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[.15em] text-[#dfc47f]">Enter this portal <ArrowRight size={13}/></span></Link>;})}
+        </div>
+      </section>
 
-          <section id="auditions" className="relative bg-[#08090d] py-20">
-            <div className="mx-auto max-w-[1440px] px-5 md:px-10">
-              <div className="mb-9 flex items-end justify-between"><div><p className="text-[10px] uppercase tracking-[.35em] text-[#d6b36a]">Now Casting</p><h2 className="mt-3 text-3xl font-semibold md:text-5xl">Featured Auditions</h2></div><a href="/auditions" className="hidden items-center gap-2 text-xs text-white/60 md:flex">View all <ArrowRight size={14}/></a></div>
-              <div className="grid gap-5 md:grid-cols-3">
-                {cards.map((card,i) => (
-                  <motion.article key={card.title} whileHover={{y:-6}} className="group overflow-hidden rounded-2xl border border-white/[.09] bg-[#11131a]">
-                    <div className={`relative h-56 bg-[linear-gradient(145deg,rgba(20,25,35,.2),rgba(94,22,32,.45)),url('https://images.unsplash.com/photo-${i===0?"1485846234645-a62644f84728":i===1?"1492691527719-9d1e07e534b4":"1481627834876-b7833e8f5570"}?auto=format&fit=crop&w=900&q=80')] bg-cover bg-center`}>
-                      <span className="absolute left-5 top-5 rounded-full bg-black/55 px-3 py-2 text-[9px] tracking-[.2em] backdrop-blur-md">{card.tag}</span>
-                      <span className="absolute bottom-4 right-4 rounded-lg border border-white/15 bg-black/55 px-3 py-2 text-[10px] backdrop-blur-md">{card.date}</span>
-                    </div>
-                    <div className="p-6"><h3 className="text-xl font-semibold">{card.title}</h3><p className="mt-3 flex items-center gap-2 text-sm text-white/55"><MapPin size={14}/>{card.meta}</p><a href="/auditions" className="mt-6 flex items-center justify-between border-t border-white/[.08] pt-5 text-xs font-bold uppercase tracking-[.15em] text-[#d6b36a]">View call <ArrowRight size={15}/></a></div>
-                  </motion.article>
-                ))}
-              </div>
-            </div>
-          </section>
+      <section className="border-y border-white/[.06] bg-[#0d0e13] py-14 lg:py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="flex items-end justify-between"><div><p className="text-[9px] uppercase tracking-[.28em] text-[#d6b36a]">Now on the call sheet</p><h2 className="mt-3 text-3xl font-medium md:text-4xl">Featured opportunities</h2></div><Link href="/auditions" className="hidden items-center gap-2 text-xs text-white/55 hover:text-[#e2c47a] sm:flex">All casting calls <ArrowRight size={14}/></Link></div>
+          <div className="mt-7 grid gap-4 md:grid-cols-3">{auditions.slice(0,3).map((call,index)=><Link key={call.id} href={`/auditions/${call.id}`} className="group overflow-hidden rounded-2xl border border-white/[.09] bg-[#111217] transition hover:border-[#d6b36a]/35"><div className={`relative flex h-48 items-end bg-gradient-to-br ${call.color} p-5`}><span className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_15%,rgba(226,196,122,.16),transparent_46%)]"/><span className="relative rounded-full border border-white/15 bg-black/30 px-3 py-1.5 text-[8px] uppercase tracking-[.18em] text-white/75">{call.type}</span><span className="absolute bottom-5 right-5 text-[9px] text-white/50">{index===0?"01":`0${index+1}`} / FEATURED</span></div><div className="p-5"><h3 className="text-base font-medium">{call.name}</h3><p className="mt-2 text-xs text-white/45">{call.role}</p><div className="mt-4 flex items-center justify-between border-t border-white/[.07] pt-4 text-[10px] text-white/50"><span className="flex items-center gap-1"><MapPin size={12}/>{call.city}</span><span>{call.date}</span></div><span className="mt-4 flex items-center justify-between text-[10px] font-semibold uppercase tracking-[.14em] text-[#dfc47f]">Review opportunity <ArrowRight size={13}/></span></div></Link>)}</div>
+          <Link href="/auditions" className="mt-5 flex items-center justify-center gap-2 rounded-full border border-white/15 py-3.5 text-xs text-white/65 sm:hidden">View all casting calls <ArrowRight size={14}/></Link>
+        </div>
+      </section>
 
-          <section id="opportunities" className="border-y border-white/[.06] bg-[#0d0f15] py-20">
-            <div className="mx-auto grid max-w-[1440px] gap-10 px-5 md:px-10 lg:grid-cols-[1fr_1.25fr]">
-              <div className="relative min-h-[430px] overflow-hidden rounded-3xl bg-[url('https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=1100&q=85')] bg-cover bg-center"><div className="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent"/></div>
-              <div className="flex flex-col justify-center"><p className="text-[10px] uppercase tracking-[.35em] text-[#d6b36a]">Built for the Industry</p><h2 className="mt-4 max-w-xl text-4xl leading-tight md:text-6xl">One stage.<br/>Every possibility.</h2><p className="mt-6 max-w-lg leading-7 text-white/58">CINEBRIDGE connects every side of production with clear workflows, verified profiles and transparent booking tools.</p>
-                <div className="mt-9 grid grid-cols-3 gap-3"><div className="rounded-xl border border-white/[.08] p-4"><Users className="text-[#d6b36a]" size={20}/><strong className="mt-4 block text-2xl">3</strong><span className="text-xs text-white/45">Portal types</span></div><div className="rounded-xl border border-white/[.08] p-4"><Search className="text-[#d6b36a]" size={20}/><strong className="mt-4 block text-2xl">11</strong><span className="text-xs text-white/45">Tamil Nadu cities</span></div><div className="rounded-xl border border-white/[.08] p-4"><Sparkles className="text-[#d6b36a]" size={20}/><strong className="mt-4 block text-2xl">1</strong><span className="text-xs text-white/45">Creative network</span></div></div>
-              </div>
-            </div>
-          </section>
+      <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
+        <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr] lg:items-center"><div><p className="text-[9px] uppercase tracking-[.28em] text-[#d6b36a]">A better way to make</p><h2 className="mt-3 text-3xl font-medium md:text-4xl">From first hello<br/>to final frame.</h2><p className="mt-4 max-w-md text-sm leading-6 text-white/45">CINEBRIDGE brings clarity to creative work — with useful profiles, direct workflows and no mystery about what happens next.</p><Link href="/about" className="mt-6 inline-flex items-center gap-2 text-xs font-semibold text-[#dfc47f]">How it works <ArrowRight size={14}/></Link></div>
+          <div className="grid gap-3 sm:grid-cols-3">{[{n:"01",title:"Find your people",desc:"Search casting calls, artists and production-ready spaces.",icon:Users},{n:"02",title:"Make a clear move",desc:"Apply, shortlist or send a booking request with the right details.",icon:CalendarDays},{n:"03",title:"Keep the work moving",desc:"Follow each update in a single role-based workspace.",icon:Sparkles}].map(item=>{const Icon=item.icon;return <article key={item.n} className="rounded-2xl border border-white/[.08] bg-[#111217] p-5"><span className="flex size-9 items-center justify-center rounded-lg border border-[#d6b36a]/20 text-[#d6b36a]"><Icon size={17}/></span><p className="mt-5 text-[9px] tracking-[.2em] text-white/35">{item.n}</p><h3 className="mt-1 text-sm font-medium">{item.title}</h3><p className="mt-2 text-xs leading-5 text-white/45">{item.desc}</p></article>;})}</div>
+        </div>
+      </section>
 
-          <section id="about" className="bg-[#08090d] py-20">
-            <div className="mx-auto max-w-[1440px] px-5 text-center md:px-10"><p className="text-[10px] uppercase tracking-[.35em] text-[#d6b36a]">The CINEBRIDGE Standard</p><h2 className="mx-auto mt-4 max-w-3xl text-3xl md:text-5xl">Discover talent. Build productions.<br/>Create the next unforgettable frame.</h2><div className="mt-10 flex justify-center gap-1 text-[#d6b36a]">{[1,2,3,4,5].map(i => <Star key={i} size={16} fill="currentColor"/>)}</div></div>
-          </section>
-        </main>
-
-        <footer className="border-t border-white/[.08] bg-[#06070a] py-10">
-          <div className="mx-auto flex max-w-[1440px] flex-col gap-6 px-5 text-sm text-white/45 md:flex-row md:items-center md:justify-between md:px-10"><a href="#" className="font-bold tracking-[.2em] text-white">CINEBRIDGE</a><div className="flex flex-wrap gap-x-6 gap-y-3"><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Safety Guidelines</a><a href="#">Contact</a></div><span>© 2026 CINEBRIDGE</span></div>
-        </footer>
-      </div>
-    </>
-  );
+      <section className="border-y border-white/[.06] bg-[#0d0e13] py-14 lg:py-20">
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <div className="flex items-end justify-between"><div><p className="text-[9px] uppercase tracking-[.28em] text-[#d6b36a]">Places for the next take</p><h2 className="mt-3 text-3xl font-medium md:text-4xl">Made for the making.</h2></div><Link href="/venues" className="hidden items-center gap-2 text-xs text-white/55 sm:flex">Explore venues <ArrowRight size={14}/></Link></div>
+          <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{venues.slice(0,3).map(venue=><Link key={venue.id} href={`/venues/${venue.id}`} className="flex gap-4 rounded-2xl border border-white/[.08] bg-[#111217] p-4 transition hover:border-[#d6b36a]/35"><div className={`flex size-16 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${venue.color} font-serif text-lg text-[#e2c47a]`}>{venue.initials}</div><div className="min-w-0 flex-1"><h3 className="truncate text-sm font-medium">{venue.name}</h3><p className="mt-1 text-[10px] text-white/45">{venue.category} · {venue.city}</p><p className="mt-3 text-[10px] text-[#dfc47f]">From ₹{venue.rate.toLocaleString("en-IN")} / hour</p></div></Link>)}</div>
+        </div>
+      </section>
+      <section className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20"><div className="flex items-end justify-between"><div><p className="text-[9px] uppercase tracking-[.28em] text-[#d6b36a]">The talent behind the frame</p><h2 className="mt-3 text-3xl font-medium md:text-4xl">Meet the community.</h2></div><Link href="/artists" className="hidden items-center gap-2 text-xs text-white/55 sm:flex">Discover artists <ArrowRight size={14}/></Link></div><div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{artists.slice(0,3).map(artist=><Link key={artist.id} href={`/artists/${artist.id}`} className="flex items-center gap-4 rounded-2xl border border-white/[.08] bg-[#111217] p-4 transition hover:border-[#d6b36a]/35"><span className={`flex size-12 items-center justify-center rounded-full ${artist.color} text-xs text-[#ecd79e]`}>{artist.initials}</span><span><strong className="block text-sm font-medium">{artist.name}</strong><small className="mt-1 block text-[10px] text-white/45">{artist.role} · {artist.city}</small></span><ArrowRight className="ml-auto text-white/30" size={15}/></Link>)}</div></section>
+      <section className="mx-auto max-w-7xl px-5 pb-16 lg:px-8 lg:pb-20"><div className="flex flex-col justify-between gap-5 rounded-3xl border border-[#d6b36a]/20 bg-[radial-gradient(ellipse_at_90%_50%,rgba(135,38,51,.24),transparent_42%),#111217] p-7 md:flex-row md:items-center md:p-10"><div><p className="text-[9px] uppercase tracking-[.25em] text-[#d6b36a]">Your next chapter</p><h2 className="mt-3 text-2xl font-medium md:text-3xl">The industry is better when we meet.</h2><p className="mt-2 text-sm text-white/45">Choose a portal and take a look around — the demo is ready.</p></div><Link href="/register" className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-[#d6b36a] px-6 py-4 text-xs font-bold text-[#171109] hover:bg-[#efd48f]">Join the network <ArrowRight size={15}/></Link></div></section>
+    </main>
+  </PublicLayout>;
 }
