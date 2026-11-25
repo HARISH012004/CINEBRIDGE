@@ -35,6 +35,8 @@ Signup and demo actions such as audition applications and venue booking requests
 
 Sample casting calls use illustrative local artwork, not official posters or images from real productions. Application and booking acknowledgements display demo reference numbers for the browser-local record; they are not production submissions, confirmed reservations, invoices, or proof of payment.
 
+Venue listings use illustrative photos of real film sets, production crews and stage rehearsals. They are not photos of the sample locations; individual photo credits and licenses are listed in [`frontend/public/venues/ATTRIBUTIONS.md`](./frontend/public/venues/ATTRIBUTIONS.md).
+
 ### Backend
 
 ```powershell

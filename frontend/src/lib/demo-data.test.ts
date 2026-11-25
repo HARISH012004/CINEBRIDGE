@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { artists, auditions, createDemoReference, dashboardForRole, demoAccounts, venues } from "./demo-data";
 
@@ -33,6 +34,17 @@ describe("CINEBRIDGE demo experience", () => {
       const references = Array.from({ length: 20 }, () => createDemoReference(kind));
       expect(references.every(reference => new RegExp(`^CB-${kind}-[A-F0-9]{8}$`).test(reference))).toBe(true);
       expect(new Set(references).size).toBe(references.length);
+    }
+  });
+
+  it("uses locally hosted, attributed film-production photos for every sample venue", () => {
+    for (const place of venues) {
+      expect(place.image.startsWith("/venues/")).toBe(true);
+      expect(place.imageAlt).toBeTruthy();
+      expect(place.imageCredit).toBeTruthy();
+      expect(place.imageSource).toContain("commons.wikimedia.org/wiki/File:");
+      expect(place.imageLicense).toBeTruthy();
+      expect(existsSync(new URL(`../../public${place.image}`, import.meta.url))).toBe(true);
     }
   });
 });
